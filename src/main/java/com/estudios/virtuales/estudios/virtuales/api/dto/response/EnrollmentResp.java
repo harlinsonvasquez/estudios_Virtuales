@@ -4,16 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 
 @Data
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EnrollmentResp {
-    private Long id;
-    private UserEnrollResp user;
-    private CourseLessonResp course;
-    private LocalDate enrollmentDate;
+public class EnrollmentResp extends EnrollmentBasicResp{
+
+    private UserBasicResp user;
 }

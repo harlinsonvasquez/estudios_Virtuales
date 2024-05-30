@@ -4,17 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
 @Data
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LessonResp {
-    private Long id;
-    private String lessonTitle;
-    private String content;
-    private List<TaskBasicResp> Tasks;
+public class LessonResp  extends LessonBasicResp{
+    private CourseBasicResp courseId;
+    private List<TaskBasicResp> TasksId;
 
 }

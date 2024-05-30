@@ -11,11 +11,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserSubmissionResp {
-    private Long id;
-    private  String userName;
-    private String email;
-    private String fullName;
-    private Role role;
+public class UserSubmissionResp extends  UserBasicResp {
+
     private List<SubmissionBasicResp> submissions;
 }

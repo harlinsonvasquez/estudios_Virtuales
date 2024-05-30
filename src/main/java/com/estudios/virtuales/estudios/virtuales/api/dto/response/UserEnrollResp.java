@@ -12,12 +12,8 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserEnrollResp {
-    private Long id;
-    private  String userName;
-    private String email;
-    private String fullName;
-    private Role role;
-    private List<SubmissionBasicResp> submissions;
+public class UserEnrollResp  extends  UserBasicResp{
+
+    private List<EnrollmentBasicResp> enrollments;
 
 }

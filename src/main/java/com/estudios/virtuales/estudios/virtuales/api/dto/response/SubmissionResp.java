@@ -15,7 +15,7 @@ public class SubmissionResp {
     private String content;
     private LocalDate submissionDate;
     private double grade;
-    private UserBasicResp user;
+    private UserBasicResp userId;
     private TaskResp task;
 
 }

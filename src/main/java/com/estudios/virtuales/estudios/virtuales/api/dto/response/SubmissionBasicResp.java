@@ -16,5 +16,5 @@ public class SubmissionBasicResp {
     private String content;
     private LocalDate submissionDate;
     private double grade;
-    private TaskResp task;
+
 }
