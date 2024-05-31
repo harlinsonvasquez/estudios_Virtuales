@@ -1,11 +1,13 @@
 package com.estudios.virtuales.estudios.virtuales.api.dto.request;
 
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -18,6 +20,6 @@ public class EnrollmentReq {
     private Long userId;
     @NotNull(message = "el id del curso es requerido")
     private Long courseId;
-    @NotBlank(message = "la fecha de matrucula es requerida")
+
     private LocalDate enrollmentDate;
 }
