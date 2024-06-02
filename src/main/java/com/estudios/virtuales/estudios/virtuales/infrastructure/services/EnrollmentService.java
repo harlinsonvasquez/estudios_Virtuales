@@ -45,18 +45,28 @@ public class EnrollmentService implements IEnrollmentService {
     }
 
     @Override
-    public EnrollmentResp get(Long aLong) {
-        return null;
+    public EnrollmentResp get(Long id) {
+        return this.entityToResp(this.find(id));
     }
 
     @Override
-    public EnrollmentResp update(EnrollmentReq request, Long aLong) {
-        return null;
+    public EnrollmentResp update(EnrollmentReq request, Long id) {
+        Enrollment enrollment=this.find(id);
+        User user=this.userRepository.findById(request.getUserId())
+                .orElseThrow(()->new BadRequestException("no hay usuarios con ese id"));
+        Course course=this.courseRepository.findById(request.getCourseId())
+                .orElseThrow(()-> new BadRequestException("no hay cursos con ese id"));
+        enrollment=this.requestToEntity(request);
+
+        enrollment.setCourses(course);
+        enrollment.setUsers(user);
+        enrollment.setId(id);
+        return this.entityToResp(this.enrollmentRepository.save(enrollment));
     }
 
     @Override
-    public void delete(Long aLong) {
-
+    public void delete(Long id) {
+            this.enrollmentRepository.delete(this.find(id));
     }
 
     @Override
@@ -109,6 +119,9 @@ public class EnrollmentService implements IEnrollmentService {
         return Enrollment.builder()
                 .enrollmentDate(request.getEnrollmentDate())
                 .build();
+    }
+    private Enrollment find(Long id){
+        return this.enrollmentRepository.findById(id).orElseThrow(()->new BadRequestException("no hay matriculas con ese id"));
     }
 }
 //quedo funcionando la la insercion de matriculas
