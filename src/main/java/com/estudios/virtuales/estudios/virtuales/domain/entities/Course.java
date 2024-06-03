@@ -28,8 +28,9 @@ public class Course{
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "courses", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Enrollment> enrollments=new HashSet<>();
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Enrollment> enrollments = new HashSet<>();
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "instructor_id", referencedColumnName = "id")
@@ -39,5 +40,16 @@ public class Course{
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Message> messages = new HashSet<>();
+
+    // Métodos auxiliares para enrollments
+    public void addEnrollment(Enrollment enrollment) {
+        enrollments.add(enrollment);
+        enrollment.setCourse(this);
+    }
+
+    public void removeEnrollment(Enrollment enrollment) {
+        enrollments.remove(enrollment);
+        enrollment.setCourse(null);
+    }
 
 }

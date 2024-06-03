@@ -11,8 +11,10 @@ import com.estudios.virtuales.estudios.virtuales.domain.repositories.CourseRepos
 import com.estudios.virtuales.estudios.virtuales.domain.repositories.EnrollmentRepository;
 import com.estudios.virtuales.estudios.virtuales.domain.repositories.UserRepository;
 import com.estudios.virtuales.estudios.virtuales.infrastructure.abstract_services.IEnrollmentService;
+import com.estudios.virtuales.estudios.virtuales.utils.enums.Role;
 import com.estudios.virtuales.estudios.virtuales.utils.enums.SortType;
 import com.estudios.virtuales.estudios.virtuales.utils.exceptions.BadRequestException;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,17 +33,23 @@ public class EnrollmentService implements IEnrollmentService {
     private final UserRepository userRepository;
     @Autowired
     private final CourseRepository courseRepository;
-    @Override
-    public EnrollmentResp create(EnrollmentReq request) {
-        User user=this.userRepository.findById(request.getUserId())
-                .orElseThrow(()->new BadRequestException("no hay usuarios con estudiantes con ese id"));
-        Course course=this.courseRepository.findById(request.getCourseId())
-                .orElseThrow(()->new BadRequestException("no hay cursos con ese id"));
 
-        Enrollment enrollment=this.requestToEntity(request);
-        enrollment.setUsers(user);
-        enrollment.setCourses(course);
-        return this.entityToResp(this.enrollmentRepository.save(enrollment));
+    private static final Role REQUIRED_ROLE=Role.STUDENT;
+    @Transactional
+    public EnrollmentResp create(EnrollmentReq request) {
+        User student = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new BadRequestException("Usuario no encontrado"));
+        validateInstructorRole(student);
+
+        Course course = courseRepository.findById(request.getCourseId())
+                .orElseThrow(() -> new BadRequestException("Curso no encontrado"));
+
+        Enrollment enrollment = new Enrollment();
+        enrollment.setEnrollmentDate(request.getEnrollmentDate()); // Puedes establecer la fecha si la tienes en el request
+        enrollment.setUsers(student);
+        enrollment.setCourse(course);
+
+        return entityToResp(enrollmentRepository.save(enrollment));
     }
 
     @Override
@@ -58,7 +66,7 @@ public class EnrollmentService implements IEnrollmentService {
                 .orElseThrow(()-> new BadRequestException("no hay cursos con ese id"));
         enrollment=this.requestToEntity(request);
 
-        enrollment.setCourses(course);
+        enrollment.setCourse(course);
         enrollment.setUsers(user);
         enrollment.setId(id);
         return this.entityToResp(this.enrollmentRepository.save(enrollment));
@@ -89,31 +97,40 @@ public class EnrollmentService implements IEnrollmentService {
         }
         return this.enrollmentRepository.findAll(pagination).map(this::entityToResp);
     }
-    private EnrollmentResp entityToResp(Enrollment entity){
-        UserBasicResp user=new UserBasicResp();
-        BeanUtils.copyProperties(entity.getUsers(),user);
+    private EnrollmentResp entityToResp(Enrollment entity) {
+        UserBasicResp user = UserBasicResp.builder()
+                .id(entity.getUsers().getId())
+                .userName(entity.getUsers().getUserName())
+                .email(entity.getUsers().getEmail())
+                .fullName(entity.getUsers().getFullName())
+                .role(entity.getUsers().getRole())
+                .build();
 
-        CourseBasicResp course=new CourseBasicResp();
-        BeanUtils.copyProperties(entity.getCourses(),course);
+        CourseBasicResp course = CourseBasicResp.builder()
+                .id(entity.getCourse().getId())
+                .courseName(entity.getCourse().getCourseName())
+                .description(entity.getCourse().getDescription())
+                .build();
 
-        UserBasicResp instructor =  UserBasicResp.builder()
-                        .id(entity.getCourses().getInstructor().getId())
-                        .userName(entity.getCourses().getInstructor().getUserName())
-                        .email(entity.getCourses().getInstructor().getEmail())
-                        .fullName(entity.getCourses().getInstructor().getFullName())
-                        .role(entity.getCourses().getInstructor().getRole())
-                        .build();
+        UserBasicResp instructor = UserBasicResp.builder()
+                .id(entity.getCourse().getInstructor().getId())
+                .userName(entity.getCourse().getInstructor().getUserName())
+                .email(entity.getCourse().getInstructor().getEmail())
+                .fullName(entity.getCourse().getInstructor().getFullName())
+                .role(entity.getCourse().getInstructor().getRole())
+                .build();
 
         course.setInstructor(instructor);
 
-        EnrollmentResp response=new EnrollmentResp();
-        BeanUtils.copyProperties(entity,response);
+        EnrollmentResp response = new EnrollmentResp();
+        BeanUtils.copyProperties(entity, response);
 
-        response.setUser(user);
+        response.setStudent(user);
         response.setCourse(course);
 
         return response;
     }
+
 
     private Enrollment requestToEntity(EnrollmentReq request){
         return Enrollment.builder()
@@ -123,5 +140,9 @@ public class EnrollmentService implements IEnrollmentService {
     private Enrollment find(Long id){
         return this.enrollmentRepository.findById(id).orElseThrow(()->new BadRequestException("no hay matriculas con ese id"));
     }
+    private void validateInstructorRole(User student) {
+        if (!REQUIRED_ROLE.equals(student.getRole())) {
+            throw new IllegalArgumentException("El estudiante debe tener el rol de STUDENT");
+        }
+    }
 }
-//quedo funcionando la la insercion de matriculas

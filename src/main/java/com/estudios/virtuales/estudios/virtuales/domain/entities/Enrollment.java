@@ -25,5 +25,5 @@ public class Enrollment {//matricula
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", referencedColumnName = "id")
-    private Course courses;
+    private Course course;
 }

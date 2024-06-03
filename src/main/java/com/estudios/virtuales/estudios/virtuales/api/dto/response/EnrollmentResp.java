@@ -12,5 +12,5 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class EnrollmentResp extends EnrollmentBasicResp{
 
-    private UserBasicResp user;
+    private UserBasicResp student;
 }
