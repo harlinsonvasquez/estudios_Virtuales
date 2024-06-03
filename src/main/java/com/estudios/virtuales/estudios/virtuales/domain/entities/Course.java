@@ -1,5 +1,6 @@
 package com.estudios.virtuales.estudios.virtuales.domain.entities;
 
+import com.estudios.virtuales.estudios.virtuales.api.dto.response.CourseBasicResp;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -41,15 +42,5 @@ public class Course{
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Message> messages = new HashSet<>();
 
-    // Métodos auxiliares para enrollments
-    public void addEnrollment(Enrollment enrollment) {
-        enrollments.add(enrollment);
-        enrollment.setCourse(this);
-    }
-
-    public void removeEnrollment(Enrollment enrollment) {
-        enrollments.remove(enrollment);
-        enrollment.setCourse(null);
-    }
 
 }

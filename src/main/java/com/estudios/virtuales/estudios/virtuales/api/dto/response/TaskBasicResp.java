@@ -17,4 +17,5 @@ public class TaskBasicResp {
     private String taskTitle;
     private String description;
     private LocalDate dueDate;
+    private LessonBasicResp lessonId;
 }

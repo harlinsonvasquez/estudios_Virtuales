@@ -17,8 +17,8 @@ public class TaskReq {
     private String taskTitle;
     @NotBlank(message = "la description es requerido")
     private String description;
-    @NotBlank(message = "la fecha es requerida")
+
     private LocalDate dueDate;
    @NotNull(message = "debes suministrar un id valido")
-    private Long lesson_id;
+    private Long lessonId;
 }
