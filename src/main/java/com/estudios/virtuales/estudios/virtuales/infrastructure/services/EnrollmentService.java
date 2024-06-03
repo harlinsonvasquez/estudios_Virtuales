@@ -60,14 +60,15 @@ public class EnrollmentService implements IEnrollmentService {
     @Override
     public EnrollmentResp update(EnrollmentReq request, Long id) {
         Enrollment enrollment=this.find(id);
-        User user=this.userRepository.findById(request.getUserId())
+        User student=this.userRepository.findById(request.getUserId())
                 .orElseThrow(()->new BadRequestException("no hay usuarios con ese id"));
+        validateInstructorRole(student);
         Course course=this.courseRepository.findById(request.getCourseId())
                 .orElseThrow(()-> new BadRequestException("no hay cursos con ese id"));
         enrollment=this.requestToEntity(request);
 
         enrollment.setCourse(course);
-        enrollment.setUsers(user);
+        enrollment.setUsers(student);
         enrollment.setId(id);
         return this.entityToResp(this.enrollmentRepository.save(enrollment));
     }

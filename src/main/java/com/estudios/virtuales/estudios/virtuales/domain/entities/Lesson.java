@@ -25,7 +25,7 @@ public class Lesson {//equivalente a materia
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", referencedColumnName = "id")
-    private Course courses;
+    private Course course;
 
     @OneToMany(mappedBy = "lessons", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Task> tasks;

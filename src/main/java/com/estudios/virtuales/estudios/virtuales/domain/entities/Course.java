@@ -21,7 +21,7 @@ public class Course{
     @Lob
     private String description;
 
-    @OneToMany(mappedBy = "courses",cascade = CascadeType.ALL, orphanRemoval = false,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "course",cascade = CascadeType.ALL, orphanRemoval = false,fetch = FetchType.EAGER)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<Lesson> lessons;
