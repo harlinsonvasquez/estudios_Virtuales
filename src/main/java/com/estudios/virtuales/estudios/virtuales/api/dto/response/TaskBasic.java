@@ -1,21 +1,18 @@
 package com.estudios.virtuales.estudios.virtuales.api.dto.response;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 @Data
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubmissionResp {
+public class TaskBasic {
     private Long id;
-    private String content;
-    private LocalDate submissionDate;
-    private double grade;
-    private UserBasicResp userId;
-    private TaskBasic taskId;
-
+    private String taskTitle;
+    private String description;
+    private LocalDate dueDate;
 }

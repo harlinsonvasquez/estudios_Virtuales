@@ -13,6 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 public class TaskResp extends TaskBasicResp{
 
-    private LessonResp lessonId;
+
     private List<SubmissionBasicResp> submissions;
 }

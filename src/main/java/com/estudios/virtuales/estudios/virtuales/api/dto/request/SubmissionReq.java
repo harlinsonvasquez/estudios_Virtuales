@@ -16,7 +16,7 @@ import java.time.LocalDate;
 public class SubmissionReq {
     @NotBlank(message = "la entrega debe tener un contenido")
     private String content;
-    @NotBlank(message = "la fecha es requerida")
+
     private LocalDate submissionDate;
     @NotNull
     private double grade;

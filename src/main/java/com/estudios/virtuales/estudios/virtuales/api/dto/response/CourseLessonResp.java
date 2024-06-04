@@ -12,5 +12,5 @@ import java.util.List;
 @NoArgsConstructor
 public class CourseLessonResp extends CourseBasicResp {
 
-    private List<LessonBasicResp> lessons;
+    private List<LessonBasic> lessons;
 }

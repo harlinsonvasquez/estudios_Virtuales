@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LessonResp  extends LessonBasicResp{
-    private CourseBasicResp courseId;
-    private List<TaskBasicResp> TasksId;
+
+    private List<TaskBasic> TasksId;
 
 }

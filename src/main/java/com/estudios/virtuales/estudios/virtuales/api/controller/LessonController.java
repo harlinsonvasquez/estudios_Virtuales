@@ -3,12 +3,14 @@ package com.estudios.virtuales.estudios.virtuales.api.controller;
 import com.estudios.virtuales.estudios.virtuales.api.dto.request.LessonReq;
 import com.estudios.virtuales.estudios.virtuales.api.dto.request.UserReq;
 import com.estudios.virtuales.estudios.virtuales.api.dto.response.LessonBasicResp;
+import com.estudios.virtuales.estudios.virtuales.api.dto.response.LessonResp;
 import com.estudios.virtuales.estudios.virtuales.api.dto.response.UserBasicResp;
 import com.estudios.virtuales.estudios.virtuales.infrastructure.abstract_services.ILessonService;
 import com.estudios.virtuales.estudios.virtuales.utils.enums.SortType;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -23,19 +25,21 @@ public class LessonController {
     private final ILessonService lessonService;
 
     @GetMapping
-    public ResponseEntity<Page<LessonBasicResp>> getAll(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "12") int size,
-            @RequestHeader(required = false) SortType sortType
-    ){
+    public Page<LessonBasicResp> getAllLessons(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "NONE") SortType sort) {
 
-        if (Objects.isNull(sortType)) sortType = SortType.NONE;
-
-        return ResponseEntity.ok(this.lessonService.getAll(page -1, size, sortType));
+        Page<LessonBasicResp> lessonBasicRespPage = lessonService.getAll(page, size, sort);
+        return new PageImpl<>(lessonBasicRespPage.getContent(), lessonBasicRespPage.getPageable(), lessonBasicRespPage.getTotalElements());
     }
     @GetMapping(path = "/{id}")
     public ResponseEntity<LessonBasicResp>get(@PathVariable Long id){
         return ResponseEntity.ok(this.lessonService.get(id));
+    }
+    @GetMapping(path = "/{id}/tasks")
+    public ResponseEntity<LessonResp> getLessonWithTasks(@PathVariable Long id) {
+        return ResponseEntity.ok(lessonService.getWithTasks(id));
     }
     @PostMapping
     public ResponseEntity<LessonBasicResp>insert(@Validated @RequestBody LessonReq request){

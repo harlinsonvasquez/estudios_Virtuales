@@ -1,7 +1,6 @@
 package com.estudios.virtuales.estudios.virtuales.api.dto.response;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -10,9 +9,8 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LessonBasicResp {
+public class CourseBasic {
     private Long id;
-    private String lessonTitle;
-    private String content;
-    private CourseBasic courseId;
+    private String courseName;
+    private String description;
 }

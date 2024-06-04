@@ -2,6 +2,7 @@ package com.estudios.virtuales.estudios.virtuales.infrastructure.services;
 
 import com.estudios.virtuales.estudios.virtuales.api.dto.request.CourseReq;
 import com.estudios.virtuales.estudios.virtuales.api.dto.response.CourseBasicResp;
+import com.estudios.virtuales.estudios.virtuales.api.dto.response.CourseLessonResp;
 import com.estudios.virtuales.estudios.virtuales.api.dto.response.UserBasicResp;
 import com.estudios.virtuales.estudios.virtuales.domain.entities.Course;
 import com.estudios.virtuales.estudios.virtuales.domain.entities.Enrollment;
@@ -10,6 +11,7 @@ import com.estudios.virtuales.estudios.virtuales.domain.repositories.CourseRepos
 import com.estudios.virtuales.estudios.virtuales.domain.repositories.EnrollmentRepository;
 import com.estudios.virtuales.estudios.virtuales.domain.repositories.UserRepository;
 import com.estudios.virtuales.estudios.virtuales.infrastructure.abstract_services.ICourseService;
+import com.estudios.virtuales.estudios.virtuales.util.CourseMapper;
 import com.estudios.virtuales.estudios.virtuales.utils.enums.Role;
 import com.estudios.virtuales.estudios.virtuales.utils.enums.SortType;
 import com.estudios.virtuales.estudios.virtuales.utils.exceptions.BadRequestException;
@@ -126,8 +128,6 @@ public class CourseService implements ICourseService {
             }else {
                 throw new IllegalArgumentException("El instructor debe tener el rol de TEACHER");
             }
-
-
         }
 
         return CourseBasicResp.builder()
@@ -151,5 +151,11 @@ public class CourseService implements ICourseService {
         if (!REQUIRED_ROLE.equals(instructor.getRole())) {
             throw new IllegalArgumentException("El instructor debe tener el rol de TEACHER");
         }
+    }
+
+    @Override
+    public CourseLessonResp getWithLessons(Long id) {
+        Course course = this.find(id);
+        return CourseMapper.toCourseLessonResp(course);
     }
 }
