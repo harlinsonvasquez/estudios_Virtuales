@@ -1,10 +1,11 @@
 package com.estudios.virtuales.estudios.virtuales.infrastructure.services;
 
 import com.estudios.virtuales.estudios.virtuales.api.dto.request.TaskReq;
-import com.estudios.virtuales.estudios.virtuales.api.dto.response.LessonBasicResp;
-import com.estudios.virtuales.estudios.virtuales.api.dto.response.TaskBasicResp;
+import com.estudios.virtuales.estudios.virtuales.api.dto.response.*;
 import com.estudios.virtuales.estudios.virtuales.domain.entities.Lesson;
+import com.estudios.virtuales.estudios.virtuales.domain.entities.Submission;
 import com.estudios.virtuales.estudios.virtuales.domain.entities.Task;
+import com.estudios.virtuales.estudios.virtuales.domain.entities.User;
 import com.estudios.virtuales.estudios.virtuales.domain.repositories.LessonRepository;
 import com.estudios.virtuales.estudios.virtuales.domain.repositories.SubmissionRepository;
 import com.estudios.virtuales.estudios.virtuales.domain.repositories.TaskRepository;
@@ -18,6 +19,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -66,26 +71,18 @@ public class TaskService implements ITaskService {
             this.taskRepository.delete(this.find(id));
     }
 
-    @Override
-    public Page<TaskBasicResp> getAll(int page, int size, SortType sort) {
-        if(page<0){
-            page=0;
-        }
-        PageRequest pagination=null;
-        switch (sort){
-            case NONE:
-                pagination=PageRequest.of(page,size);
-                break;
-
-            case ASC:
-                pagination=PageRequest.of(page,size, Sort.by(FIELD_BY_SORT).ascending());
-                break;
-            case DESC:
-                pagination=PageRequest.of(page,size,Sort.by(FIELD_BY_SORT).descending());
-                break;
-        }
-        return this.taskRepository.findAll(pagination).map(this::entityToResp);
+   @Override
+   @Transactional
+   public Page<TaskBasicResp> getAll(int page, int size, SortType sort) {
+       PageRequest pageRequest = getPageRequest(page, size, sort);
+       return taskRepository.findAll(pageRequest).map(this::entityToResp);
+   }
+    private PageRequest getPageRequest(int page, int size, SortType sort) {
+        if (page < 0) page = 0;
+        Sort.Direction direction = sort.equals(SortType.DESC) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        return PageRequest.of(page, size, Sort.by(direction, "id"));
     }
+
     private TaskBasicResp entityToResp(Task entity){
         LessonBasicResp lesson=LessonBasicResp.builder()
                 .id(entity.getLessons().getId())
@@ -108,5 +105,39 @@ public class TaskService implements ITaskService {
     }
     private Task find(Long id){
         return this.taskRepository.findById(id).orElseThrow(()->new BadRequestException("no hay tareas con el id suministrado"));
+    }
+
+    @Override
+    @Transactional
+    public TaskResp getWithSubmissions(Long id) {
+        Task task = find(id);
+        List<SubmissionBasicResp> submissions = submissionRepository.findByTasksId(id)
+                .stream()
+                .map(this::submissionEntityToBasicResp)
+                .collect(Collectors.toList());
+
+        return TaskResp.builder()
+                .id(task.getId())
+                .taskTitle(task.getTaskTitle())
+                .description(task.getDescription())
+                .dueDate(task.getDueDate())
+                .submissions(submissions)
+                .build();
+    }
+    private SubmissionBasicResp submissionEntityToBasicResp(Submission submission) {
+        User student = submission.getUser();
+        UserBasic userResp = UserBasic.builder()
+                .id(student.getId())
+                .fullName(student.getUserName())
+                .email(student.getEmail())
+                .build();
+
+        return SubmissionBasicResp.builder()
+                .id(submission.getId())
+                .content(submission.getContent())
+                .submissionDate(submission.getSubmissionDate())
+                .grade(submission.getGrade())
+                .student(userResp)
+                .build();
     }
 }

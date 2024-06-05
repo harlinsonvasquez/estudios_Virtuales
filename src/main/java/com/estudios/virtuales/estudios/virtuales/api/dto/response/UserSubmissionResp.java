@@ -10,7 +10,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserSubmissionResp extends  UserBasicResp {
+public class UserSubmissionResp extends  UserBasic {
 
-    private List<SubmissionBasicResp> submissions;
+    private List<SubmissionBasic> submissions;
 }

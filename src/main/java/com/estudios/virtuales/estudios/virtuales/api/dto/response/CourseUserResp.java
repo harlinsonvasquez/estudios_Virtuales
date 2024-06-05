@@ -10,8 +10,8 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class CourseUserResp  extends CourseBasicResp{
+public class CourseUserResp  extends CourseBasic{
 
-    private List<UserBasicResp> users;
+    private List<UserBasic> users;
 
 }

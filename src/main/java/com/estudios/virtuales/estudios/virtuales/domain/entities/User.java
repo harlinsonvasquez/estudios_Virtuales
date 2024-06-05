@@ -30,7 +30,7 @@ public class User {//usuario
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, orphanRemoval = false,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = false,fetch = FetchType.LAZY)
     private List<Submission>submissions;
 
     @ToString.Exclude

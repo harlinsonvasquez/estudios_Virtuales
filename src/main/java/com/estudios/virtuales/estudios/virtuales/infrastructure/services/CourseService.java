@@ -1,9 +1,7 @@
 package com.estudios.virtuales.estudios.virtuales.infrastructure.services;
 
 import com.estudios.virtuales.estudios.virtuales.api.dto.request.CourseReq;
-import com.estudios.virtuales.estudios.virtuales.api.dto.response.CourseBasicResp;
-import com.estudios.virtuales.estudios.virtuales.api.dto.response.CourseLessonResp;
-import com.estudios.virtuales.estudios.virtuales.api.dto.response.UserBasicResp;
+import com.estudios.virtuales.estudios.virtuales.api.dto.response.*;
 import com.estudios.virtuales.estudios.virtuales.domain.entities.Course;
 import com.estudios.virtuales.estudios.virtuales.domain.entities.Enrollment;
 import com.estudios.virtuales.estudios.virtuales.domain.entities.User;
@@ -24,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -158,4 +157,36 @@ public class CourseService implements ICourseService {
         Course course = this.find(id);
         return CourseMapper.toCourseLessonResp(course);
     }
+    @Override
+    public List<CourseBasic> getCoursesByUserId(Long userId) {
+        List<Enrollment> enrollments = enrollmentRepository.findByUsersId(userId);
+        return enrollments.stream()
+                .map(enrollment -> {
+                    Course course = enrollment.getCourse();
+                    return new CourseBasic(course.getId(), course.getCourseName(), course.getDescription());
+                })
+                .collect(Collectors.toList());
+    }
+    // Método para obtener todos los usuarios inscritos en un curso
+    @Override
+    public CourseUserResp getUsersInCourse(Long courseId) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new BadRequestException("Curso no encontrado"));
+
+        List<UserBasic> users = enrollmentRepository.findByCourseId(courseId).stream()
+                .map(enrollment -> {
+                    UserBasic userBasic = new UserBasic();
+                    BeanUtils.copyProperties(enrollment.getUsers(), userBasic);
+                    return userBasic;
+                })
+                .collect(Collectors.toList());
+
+        return CourseUserResp.builder()
+                .id(course.getId())
+                .courseName(course.getCourseName())
+                .description(course.getDescription())
+                .users(users)
+                .build();
+    }
+
 }

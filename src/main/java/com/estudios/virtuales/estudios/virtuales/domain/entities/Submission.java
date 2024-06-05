@@ -27,5 +27,5 @@ public class Submission {//envio de la tarea o task
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-    private User users;
+    private User user;
 }

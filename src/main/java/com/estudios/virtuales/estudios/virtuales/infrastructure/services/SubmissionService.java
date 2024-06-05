@@ -42,7 +42,7 @@ public class SubmissionService implements ISubmissionService {
         submission.setContent(request.getContent());
         submission.setSubmissionDate(request.getSubmissionDate());
         submission.setGrade(request.getGrade());
-        submission.setUsers(student);
+        submission.setUser(student);
         submission.setTasks(task);
 
         return entityToResp(submissionRepository.save(submission));
@@ -65,7 +65,7 @@ public class SubmissionService implements ISubmissionService {
         submission.setContent(request.getContent());
         submission.setSubmissionDate(request.getSubmissionDate());
         submission.setGrade(request.getGrade());
-        submission.setUsers(student);
+        submission.setUser(student);
         submission.setTasks(task);
         submission.setId(id);
         return this.entityToResp(this.submissionRepository.save(submission));
@@ -98,11 +98,11 @@ public class SubmissionService implements ISubmissionService {
     }
     private SubmissionResp entityToResp(Submission entity){
         UserBasicResp student=UserBasicResp.builder()
-                .id(entity.getUsers().getId())
-                .userName(entity.getUsers().getUserName())
-                .email(entity.getUsers().getEmail())
-                .fullName(entity.getUsers().getFullName())
-                .role(entity.getUsers().getRole())
+                .id(entity.getUser().getId())
+                .userName(entity.getUser().getUserName())
+                .email(entity.getUser().getEmail())
+                .fullName(entity.getUser().getFullName())
+                .role(entity.getUser().getRole())
                 .build();
 
         TaskBasic task= TaskBasic.builder()

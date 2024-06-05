@@ -11,7 +11,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class TaskResp extends TaskBasicResp{
+public class TaskResp extends TaskBasic{
 
 
     private List<SubmissionBasicResp> submissions;

@@ -5,6 +5,7 @@ import com.estudios.virtuales.estudios.virtuales.api.dto.request.CourseReq;
 import com.estudios.virtuales.estudios.virtuales.api.dto.response.CourseBasic;
 import com.estudios.virtuales.estudios.virtuales.api.dto.response.CourseBasicResp;
 import com.estudios.virtuales.estudios.virtuales.api.dto.response.CourseLessonResp;
+import com.estudios.virtuales.estudios.virtuales.api.dto.response.CourseUserResp;
 import com.estudios.virtuales.estudios.virtuales.infrastructure.abstract_services.ICourseService;
 import com.estudios.virtuales.estudios.virtuales.util.CourseMapper;
 import com.estudios.virtuales.estudios.virtuales.utils.enums.SortType;
@@ -48,6 +49,11 @@ public class CourseController {
     @GetMapping(path = "/{id}/lesson")
     public ResponseEntity<CourseLessonResp> getCourseWithLessons(@PathVariable Long id) {
         return ResponseEntity.ok(this.courseService.getWithLessons(id));
+    }
+    @GetMapping("/{id}/users")
+    public ResponseEntity<CourseUserResp> getUsersInCourse(@PathVariable Long id) {
+        CourseUserResp courseUserResp = courseService.getUsersInCourse(id);
+        return ResponseEntity.ok(courseUserResp);
     }
 
     @PostMapping

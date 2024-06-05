@@ -11,11 +11,9 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubmissionBasicResp {
+public class SubmissionBasic {
     private Long id;
     private String content;
     private LocalDate submissionDate;
     private double grade;
-    private UserBasic student;
-
 }
